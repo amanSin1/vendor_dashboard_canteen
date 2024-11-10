@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:vendor_digital_canteen/drawer/app_drawer.dart';
 import 'package:vendor_digital_canteen/orders/service/order_service.dart';
 import 'package:vendor_digital_canteen/orders/widgets/my_card.dart';
-
-import 'order_summary/order_summary_page.dart';
 
 class NewOrderPage extends StatelessWidget {
   final OrderService _orderService = OrderService(); // Instantiate the service
@@ -16,48 +13,41 @@ class NewOrderPage extends StatelessWidget {
     return Scaffold(
       // Add the AppBar with a menu icon to open the drawer
       appBar: AppBar(
-        title: Text("H e y👋"),
+        backgroundColor: Colors.transparent,
         centerTitle: true,
-        backgroundColor: Colors.blueAccent,
+        toolbarHeight: 100,
+        title: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Orders",
+                style: TextStyle(fontSize: 25, color: Colors.black87)),
+            Text("Track and Complete Orders",
+                style: TextStyle(color: Colors.grey, fontSize: 16)),
+          ],
+        ),
       ),
-
-      // Drawer widget
-      drawer: AppDrawer(),
 
       body: SafeArea(
         child: Container(
-          margin: const EdgeInsets.only(top: 5),
           width: double.infinity,
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
-            children: [
-              // Header section
-              Container(
-                width: double.infinity,
-                height: 100,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Orders", style: TextStyle(fontSize: 25, color: Colors.black87)),
-                    Text("Track and Complete Orders", style: TextStyle(color: Colors.grey)),
-                  ],
-                ),
-              ),
-              const Divider(thickness: 1),
-
+            children: [            
+              const Divider(),
               // Completed Orders section
-              Container(
-                height: 230,
+              SizedBox(
+                height: 250,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const SizedBox(height: 10,),
+                      const Text(
                         "Completed Orders",
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 20),
                       // StreamBuilder to fetch completed orders from Firestore
                       Expanded(
                         child: StreamBuilder<QuerySnapshot>(
@@ -67,10 +57,10 @@ class NewOrderPage extends StatelessWidget {
                               .snapshots(),
                           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
-                              return Center(child: CircularProgressIndicator());
+                              return const Center(child: CircularProgressIndicator());
                             }
                             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                              return Center(child: Text("No completed orders"));
+                              return const Center(child: Text("No completed orders"));
                             }
 
                             final orders = snapshot.data!.docs;
